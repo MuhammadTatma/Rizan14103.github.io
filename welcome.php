@@ -46,6 +46,7 @@ if (!isset($_SESSION['username'])) {
             <div id="login-btn" class="fas fa-user">
                 <ul>
                     <li><a href="#">My Profile</a></li>
+                    <li><a href="chat.php">Chat</a></li>
                     <li><a href="logout.php">Logout</a></li>
                 </ul>
             </div>

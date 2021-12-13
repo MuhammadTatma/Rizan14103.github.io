@@ -27,19 +27,22 @@ SET time_zone = "+00:00";
 -- Struktur dari tabel `users`
 --
 
-CREATE TABLE `users` (
+CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL,
   `username` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL
+  `password` varchar(255) NOT NULL,
+  `no_telpon` varchar(16),
+  `jenis_kelamin` varchar(16), 
+  `tanggal_lahir` date
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data untuk tabel `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `email`, `password`) VALUES
-(17, 'Syafnides Wulan S', 'syafnideswulan@gmail.com', 'cfe4de3567eadaf6682db4754ce09ef2');
+-- INSERT INTO `users` (`id`, `username`, `email`, `password`) VALUES
+-- (17, 'Syafnides Wulan S', 'syafnideswulan@gmail.com', 'cfe4de3567eadaf6682db4754ce09ef2');
 
 --
 -- Indexes for dumped tables
@@ -65,3 +68,30 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+-- create products table
+CREATE TABLE IF NOT EXISTS `products`(
+  `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+  `product_name` varchar(255) NOT NULL, 
+  `product_price` FLOAT, 
+  `product_image` varchar(100)
+);
+
+-- insert data into products table
+INSERT INTO  `products` (product_name, product_price, product_image) VALUES
+('produk 1',40000,'image/food-1.png'),
+('produk 2',39000,'image/food-2.png'),
+('produk 3',39500,'image/food-3.png'),
+('produk 4',38000,'image/food-4.png'),
+('produk 5',35000,'image/food-5.png'),
+('produk 6',37500,'image/food-6.png'),
+('produk 7',36500,'image/food-7.png'),
+('produk 8',39000,'image/food-8.png');
+
+-- create cart table to store information user id and product id in cart
+CREATE TABLE IF NOT EXISTS `cart` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `user_id` INT(11) NOT NULL,
+  `product_id` INT(11) NOT NULL
+);

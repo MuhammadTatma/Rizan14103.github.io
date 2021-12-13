@@ -1,9 +1,48 @@
 <?php 
 
+include 'php/config.php';
+require("function.php");
 session_start();
 
 if (!isset($_SESSION['username'])) {
     header("Location: index.php");
+}
+
+if(isset($_POST['addtocart'])){
+    $result = cekCart($conn, $_SESSION['userid'], $_POST['product_id']);
+    // var_dump($result);
+    if($result->num_rows > 0){ //jika udah ada
+        echo "<script>alert('Product sudah ditambahkan di cart...!')</script>";
+        echo "<script>window.location = '#popular'</script>"; 
+    }else{        
+        $result = addCart($conn, $_SESSION['userid'], $_POST['product_id']);
+        echo "<script>alert('Berhasil menambahkan...!')</script>";
+        echo "<script>window.location = '#popular'</script>"; 
+    }
+}
+
+if(isset($_POST['remove'])){
+    // print_r($_GET['id']);
+    $result = removeCart($conn, $_SESSION['userid'], $_GET['id']);
+    $effected = mysqli_affected_rows($conn);
+    // var_dump($effected);
+    if($effected >0 ){
+        echo "<script>alert('Product has been removed...!')</script>";
+    }else{
+        echo "<script>alert('Something went kleru...!')</script>";
+    }
+}
+
+if(isset($_POST['simpanProfile'])){
+    $result = updateProfile($conn, $_SESSION['userid'], $_POST['username'], $_POST['email'], $_POST['phone'],$_POST['kelamin'],$_POST['birthday']);
+    $effected = mysqli_affected_rows($conn);
+    // var_dump($_SESSION['userid']);
+    // var_dump($_POST['kelamin']);
+    if($effected >0 ){
+        echo "<script>alert('berhasil di simpan...!')</script>";
+    }else{
+        echo "<script>alert('Something went kleru...!')</script>";
+    }
 }
 
 ?>
@@ -42,7 +81,18 @@ if (!isset($_SESSION['username'])) {
         <div class="icons">
             <div id="menu-btn" class="fas fa-bars"></div>
             <div id="search-btn" class="fas fa-search"></div>
-            <div id="cart-btn" class="fas fa-shopping-cart"></div>
+            <div id="cart-btn" class="fas fa-shopping-cart">
+            <?php                 
+                $result = getCart($conn, $_SESSION['userid']);
+                $count = $result->num_rows;
+                echo "<span id=\"cart-count\">$count</span>";
+                // if(isset($_SESSION['cart'])){
+                //     $count = count($_SESSION['cart']);
+                //     echo "<span id=\"cart-count\">$count</span>";
+                // }else
+                //     echo "<span id=\"cart-count\">0</span>";
+                ?>
+            </div>
             <div id="login-btn" class="fas fa-user">
                 <ul>
                     <li><a href="#">My Profile</a></li>
@@ -73,79 +123,34 @@ if (!isset($_SESSION['username'])) {
             <h3 class="title">your products</h3>
 
             <div class="box-container">
-                <div class="box">
-                    <i class="fas fa-times"></i>
-                    <img src="image/menu-1.png" alt="" />
-                    <div class="content">
-                        <h3>delicious food</h3>
-                        <span> quantity : </span>
-                        <input type="number" name="" value="1" id="" />
-                        <br />
-                        <span> price : </span>
-                        <span class="price"> Rp.400.00 </span>
-                    </div>
-                </div>
-
-                <div class="box">
-                    <i class="fas fa-times"></i>
-                    <img src="image/menu-2.png" alt="" />
-                    <div class="content">
-                        <h3>delicious food</h3>
-                        <span> quantity : </span>
-                        <input type="number" name="" value="1" id="" />
-                        <br />
-                        <span> price : </span>
-                        <span class="price"> Rp.40.000 </span>
-                    </div>
-                </div>
-
-                <div class="box">
-                    <i class="fas fa-times"></i>
-                    <img src="image/menu-3.png" alt="" />
-                    <div class="content">
-                        <h3>delicious food</h3>
-                        <span> quantity : </span>
-                        <input type="number" name="" value="1" id="" />
-                        <br />
-                        <span> price : </span>
-                        <span class="price"> Rp.40.000</span>
-                    </div>
-                </div>
-
-                <div class="box">
-                    <i class="fas fa-times"></i>
-                    <img src="image/menu-4.png" alt="" />
-                    <div class="content">
-                        <h3>delicious food</h3>
-                        <span> quantity : </span>
-                        <input type="number" name="" value="1" id="" />
-                        <br />
-                        <span> price : </span>
-                        <span class="price"> Rp.40.000 </span>
-                    </div>
-                </div>
-
-                <div class="box">
-                    <i class="fas fa-times"></i>
-                    <img src="image/menu-5.png" alt="" />
-                    <div class="content">
-                        <h3>delicious food</h3>
-                        <span> quantity : </span>
-                        <input type="number" name="" value="1" id="" />
-                        <br />
-                        <span> price : </span>
-                        <span class="price"> Rp.40.000 </span>
-                    </div>
-                </div>
+                <?php 
+                $total = 0 ;
+                $result = getCart($conn, $_SESSION['userid']);                
+                // var_dump($result->num_rows > 0);    
+                // var_dump($result->num_rows);                  
+                if($result->num_rows > 0){
+                    // $product_id = array_column($_SESSION['cart'],'product_id');    
+                    while($row = mysqli_fetch_assoc($result)){
+                        food_keranjang($row['product_name'], $row['product_price'],$row['product_image'], $row['id']);
+                        $total = $total+(int)$row['product_price'];
+                    }                    
+                }else{
+                        echo "<h3 style=\"text-align:center;\">Cart is Empty</h3>";
+                }
+                
+                ?>
             </div>
-        </div>
+        </div>        
 
         <div class="cart-total">
             <h3 class="title">cart total</h3>
 
             <div class="box">
-                <h3 class="subtotal">subtotal : <span> Rp.200.000</span></h3>
-                <h3 class="total">total : <span>Rp.200.000</span></h3>
+                <h3 class="subtotal">Delivery : <span> Rp.- </span></h3>
+                <h3 class="total">total : <?php 
+                $temp = rupiah($total);
+                echo "<span>$temp</span>";
+                ?></h3>
 
                 <a href="#" class="btn">proceed to checkout</a>
             </div>
@@ -160,42 +165,51 @@ if (!isset($_SESSION['username'])) {
                 <h3 class="title">Profile Saya</h3>
             </header>
             <main>
-                <form action="">
+                <?php 
+                $result = getProfile($conn, $_SESSION['userid']);
+                $row = $result->fetch_assoc();
+                $username = $row['username'];
+                $email = $row['email'];                
+                $hape = $row['no_telpon'];
+                $kelamin = $row['jenis_kelamin'];
+                $birthday = $row['tanggal_lahir'];
+                ?>
+                <form action="welcome.php" method="POST">
                     <div class="input-group">
                         <label class="input-label" for="name">Username</label>
-                        <input type="text" name="name" id="name" placeholder="costumer's username" required>
+                        <input type="text" name="username" id="name" placeholder="costumer's username" value=<?=  $username ?> required>
                     </div>
 
                     <div class="input-group">
-                        <label class="input-label" for="age">Email</label>
-                        <input type="email" name="email" id="email" placeholder="costumer's email" required>
+                        <label class="input-label" for="email">Email</label>
+                        <input type="email" readonly name="email" id="email" placeholder="costumer's email" value=<?=  $email ?> required>
                     </div>
 
                     <div class="input-group">
-                        <label class="input-label" class="input-label" for="age">Nomor Telepon</label>
-                        <input type="text" name="phone" id="phone" placeholder="costumer's phone number">
+                        <label class="input-label" class="input-label" for="phone">Nomor Telepon</label>
+                        <input type="text" name="phone" id="phone" placeholder="costumer's phone number" value=<?= $hape ?>>
                     </div>
 
                     <div class="input-group">
                         <p class="input-label">Jenis Kelamin</p>
                         <div class="input-radio">
-                            <label for="laki-laki"><input type="radio" name="jenis-kelamin"
-                                    id="laki-laki">Laki-Laki</label>
-                            <label for="perempuan"><input type="radio" name="jenis-kelamin"
-                                    id="perempuan">Perempuan</label>
+                            <label ><input type="radio" name="kelamin"
+                                    id="laki-laki" value="L" <?php echo ($kelamin =='L')? 'checked':'' ?> >Laki-Laki</label>
+                            <label ><input type="radio" name="kelamin"
+                                    id="perempuan" value="P" <?php echo ($kelamin =='P')? 'checked':'' ?> >Perempuan</label>
                         </div>
                     </div>
 
                     <div class="input-group">
                         <label class="input-label" class="input-label" for="birthday">Tanggal Lahir</label>
                         <div class="input-date">
-                            <input type="date" name="birthday" id="">
+                            <input type="date" name="birthday" id="birthday" value=<?=  $birthday ?>>
                         </div>
                     </div>
 
                     <div class="input-group">
                         <label class="input-label"></label>
-                        <input type="button" value="simpan" class="btn">
+                        <button type="submit" name="simpanProfile" class="btn">simpan</button>
                     </div>
                 </form>
 
@@ -354,165 +368,16 @@ if (!isset($_SESSION['username'])) {
         </div>
 
         <div class="box-container">
-            <div class="box">
-                <a href="#" class="fas fa-heart"></a>
-                <div class="image">
-                    <img src="image/food-1.png" alt="" />
-                </div>
-                <div class="content">
-                    <h3>delicious food</h3>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                        <span> (50) </span>
-                    </div>
-                    <div class="price">Rp.40.000 <span>Rp.50.000</span></div>
-                    <a href="#" class="btn">add to cart</a>
-                </div>
-            </div>
+            <?php 
+            $sql = "SELECT *FROM products";
 
-            <div class="box">
-                <a href="#" class="fas fa-heart"></a>
-                <div class="image">
-                    <img src="image/food-2.png" alt="" />
-                </div>
-                <div class="content">
-                    <h3>delicious food</h3>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                        <span> (50) </span>
-                    </div>
-                    <div class="price">Rp.40.000 <span>Rp.50.000</span></div>
-                    <a href="#" class="btn">add to cart</a>
-                </div>
-            </div>
-
-            <div class="box">
-                <a href="#" class="fas fa-heart"></a>
-                <div class="image">
-                    <img src="image/food-3.png" alt="" />
-                </div>
-                <div class="content">
-                    <h3>delicious food</h3>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                        <span> (50) </span>
-                    </div>
-                    <div class="price">Rp.40.000 <span>Rp.50.000</span></div>
-                    <a href="#" class="btn">add to cart</a>
-                </div>
-            </div>
-
-            <div class="box">
-                <a href="#" class="fas fa-heart"></a>
-                <div class="image">
-                    <img src="image/food-4.png" alt="" />
-                </div>
-                <div class="content">
-                    <h3>delicious food</h3>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                        <span> (50) </span>
-                    </div>
-                    <div class="price">Rp.40.000 <span>Rp.50.000</span></div>
-                    <a href="#" class="btn">add to cart</a>
-                </div>
-            </div>
-
-            <div class="box">
-                <a href="#" class="fas fa-heart"></a>
-                <div class="image">
-                    <img src="image/food-5.png" alt="" />
-                </div>
-                <div class="content">
-                    <h3>delicious food</h3>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                        <span> (50) </span>
-                    </div>
-                    <div class="price">Rp.40.000 <span>Rp.50.000</span></div>
-                    <a href="#" class="btn">add to cart</a>
-                </div>
-            </div>
-
-            <div class="box">
-                <a href="#" class="fas fa-heart"></a>
-                <div class="image">
-                    <img src="image/food-6.png" alt="" />
-                </div>
-                <div class="content">
-                    <h3>delicious food</h3>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                        <span> (50) </span>
-                    </div>
-                    <div class="price">Rp.40.000 <span>Rp.50.000</span></div>
-                    <a href="#" class="btn">add to cart</a>
-                </div>
-            </div>
-
-            <div class="box">
-                <a href="#" class="fas fa-heart"></a>
-                <div class="image">
-                    <img src="image/food-7.png" alt="" />
-                </div>
-                <div class="content">
-                    <h3>delicious food</h3>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                        <span> (50) </span>
-                    </div>
-                    <div class="price">Rp.40.000 <span>Rp.50.000</span></div>
-                    <a href="#" class="btn">add to cart</a>
-                </div>
-            </div>
-
-            <div class="box">
-                <a href="#" class="fas fa-heart"></a>
-                <div class="image">
-                    <img src="image/food-8.png" alt="" />
-                </div>
-                <div class="content">
-                    <h3>delicious food</h3>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                        <span> (50) </span>
-                    </div>
-                    <div class="price">Rp.40.000 <span>Rp.50.000</span></div>
-                    <a href="#" class="btn">add to cart</a>
-                </div>
-            </div>
+            $result = mysqli_query($conn, $sql);
+            if(mysqli_num_rows($result) > 0){
+                while($row = mysqli_fetch_assoc($result)){
+                    food_popular($row['product_name'], $row['product_price'], $row['product_image'], $row['id']);
+                }
+            }
+            ?>
         </div>
     </section>
 

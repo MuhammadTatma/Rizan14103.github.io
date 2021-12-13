@@ -11,8 +11,9 @@ if (isset($_SESSION['username'])) {
 }
 
 if (isset($_POST['submit'])) {
-	$username = $_POST['username'];
+	$name = $_POST['username'];
 	$email = $_POST['email'];
+    $no_telpon = $_POST['noHp'];
 	$password = md5($_POST['password']);
 	$cpassword = md5($_POST['cpassword']);
 
@@ -20,8 +21,8 @@ if (isset($_POST['submit'])) {
 		$sql = "SELECT * FROM users WHERE email='$email'";
 		$result = mysqli_query($conn, $sql);
 		if (!$result->num_rows > 0) {
-			$sql = "INSERT INTO users (username, email, password)
-					VALUES ('$username', '$email', '$password')";
+			$sql = "INSERT INTO users (username, email, no_telpon, password)
+					VALUES ('$name', '$email', '$no_telpon', '$password')";
 			$result = mysqli_query($conn, $sql);
 			if ($result) {
 				echo "<script>alert('Wow! User Registration Completed.')</script>";
@@ -38,6 +39,7 @@ if (isset($_POST['submit'])) {
 		}
 		
 	} else {
+        var_dump("sddd");
 		echo "<script>alert('Password Not Matched.')</script>";
 	}
 }
@@ -63,13 +65,13 @@ if (isset($_POST['submit'])) {
         <form action="" method="POST" class="login-email">
             <p class="login-text" style="font-size: 2rem; font-weight: 800;">Register</p>
             <div class="input-group">
-                <input type="text" placeholder="Username" name="username" value="<?php echo $username; ?>" required>
+                <input type="text" placeholder="Username" name="username" value="<?php echo $name; ?>" required>
             </div>
             <div class="input-group">
                 <input type="email" placeholder="Email" name="email" value="<?php echo $email; ?>" required>
             </div>
             <div class="input-group">
-                <input type="text" placeholder="No Handphone" name="noHp" value="<?php echo $noHp; ?>" required>
+                <input type="text" placeholder="No Handphone" name="noHp" value="<?php echo $no_telpon; ?>" required>
             </div>
             <div class="input-group">
                 <input type="password" placeholder="Password" name="password" value="<?php echo $_POST['password']; ?>"
@@ -80,7 +82,7 @@ if (isset($_POST['submit'])) {
                     value="<?php echo $_POST['cpassword']; ?>" required>
             </div>
             <div class="input-group">
-                <button name="submit" class="btn"><a href="welcome.php">Register</a></button>
+                <button name="submit" type="submit" class="btn"><a href="welcome.php">Register</a></button>
             </div>
             <p class="login-register-text">Have an account? <a href="login.php">Login Here</a>.</p>
         </form>

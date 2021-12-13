@@ -132,6 +132,28 @@ section {
   background: #4481eb;
 }
 
+#cart-btn{
+  height: 4.5rem;
+  width: fit-content;
+  line-height: 4.5rem;
+  font-size: 2rem;
+  /* background: #f7f7f7;
+  color: #130f40; */
+  border-radius: 0.5rem;
+  margin-left: 0.3rem;
+  cursor: pointer;
+  text-align: center;
+  padding: 0 0.5rem 0 0.5rem;
+}
+
+#cart-count{
+  text-align: center;
+  padding: 0 1rem 0 1rem;
+  border-radius: 3rem;
+  color: #000;
+  background-color: #fff;
+}
+
 #login-btn ul{
   position: absolute;
   /* top: 6rem; */
@@ -246,7 +268,9 @@ section {
 }
 
 .shopping-cart-container.active {
-  display: block;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .shopping-cart-container::-webkit-scrollbar {
@@ -275,6 +299,8 @@ section {
   border-radius: 0.5rem;
   -webkit-animation: fadeUp 0.4s linear;
   animation: fadeUp 0.4s linear;
+  width: 65%;
+  height: fit-content;
 }
 
 .shopping-cart-container .products-container .box-container {
@@ -355,11 +381,13 @@ section {
 }
 
 .shopping-cart-container .cart-total {
-  margin-top: 2rem;
+  /* margin-top: 2rem; */
   border: 0.1rem solid rgba(0, 0, 0, 0.2);
   border-radius: 0.5rem;
   -webkit-animation: fadeUp 0.4s linear 0.4s backwards;
   animation: fadeUp 0.4s linear 0.4s backwards;
+  width: 30%;
+  height: fit-content;
 }
 
 .shopping-cart-container .cart-total .box {
@@ -478,11 +506,18 @@ aside .image-card button{
   /* background-color: #4481eb; */
 }
 
-.input-group:nth-child(1) input,.input-group:nth-child(2) input,.input-group:nth-child(3) input{
+.input-group:nth-child(1) input,.input-group:nth-child(3) input{
   width: 70%;
   padding-left: 10px;
   border: 0.1rem solid rgba(0, 0, 0, 0.2);
   border-radius: 0.5rem;
+  text-transform: none;
+}
+
+.input-group:nth-child(2) input{
+  width: 70%;
+  padding-left: 10px;
+  text-transform: none;
 }
 
 .input-group .input-radio{

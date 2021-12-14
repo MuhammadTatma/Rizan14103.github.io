@@ -86,11 +86,6 @@ if(isset($_POST['simpanProfile'])){
                 $result = getCart($conn, $_SESSION['userid']);
                 $count = $result->num_rows;
                 echo "<span id=\"cart-count\">$count</span>";
-                // if(isset($_SESSION['cart'])){
-                //     $count = count($_SESSION['cart']);
-                //     echo "<span id=\"cart-count\">$count</span>";
-                // }else
-                //     echo "<span id=\"cart-count\">0</span>";
                 ?>
             </div>
             <div id="login-btn" class="fas fa-user">
@@ -235,7 +230,7 @@ if(isset($_POST['simpanProfile'])){
     <section class="home" id="home">
         <div class="swiper-container home-slider">
             <div class="swiper-wrapper wrapper">
-                <div class="swiper-slide slide">
+                <form method="POST" class="swiper-slide slide">
                     <div class="content">
                         <span>our special dish</span>
                         <h3>spicy noodles</h3>
@@ -243,14 +238,15 @@ if(isset($_POST['simpanProfile'])){
                             Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit
                             natus dolor cumque?
                         </p>
-                        <a href="#" class="btn">order now</a>
+                        <button type="submit" class="btn" name="addtocart">order now</button>                        
                     </div>
                     <div class="image">
                         <img src="image/home-img-1.png" alt="" />
                     </div>
-                </div>
+                    <input type="hidden" name="product_id" value=1>
+                </form>
 
-                <div class="swiper-slide slide">
+                <form method="POST" class="swiper-slide slide">
                     <div class="content">
                         <span>our special dish</span>
                         <h3>fried chicken</h3>
@@ -258,14 +254,15 @@ if(isset($_POST['simpanProfile'])){
                             Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit
                             natus dolor cumque?
                         </p>
-                        <a href="#" class="btn">order now</a>
+                        <button type="submit" class="btn" name="addtocart">order now</button>  
                     </div>
                     <div class="image">
                         <img src="image/home-img-2.png" alt="" />
                     </div>
-                </div>
+                    <input type="hidden" name="product_id" value=2>
+                </form>
 
-                <div class="swiper-slide slide">
+                <form method="POST" class="swiper-slide slide">
                     <div class="content">
                         <span>our special dish</span>
                         <h3>hot pizza</h3>
@@ -273,12 +270,13 @@ if(isset($_POST['simpanProfile'])){
                             Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit
                             natus dolor cumque?
                         </p>
-                        <a href="#" class="btn">order now</a>
+                        <button type="submit" class="btn" name="addtocart">order now</button>  
                     </div>
                     <div class="image">
                         <img src="image/home-img-3.png" alt="" />
                     </div>
-                </div>
+                    <input type="hidden" name="product_id" value=3>
+                </form>
             </div>
 
             <div class="swiper-pagination"></div>
@@ -290,27 +288,27 @@ if(isset($_POST['simpanProfile'])){
     <section class="category">
         <a href="#" class="box">
             <img src="image/cat-1.png" alt="" />
-            <h3>combo</h3>
+            <h3>Paketan</h3>
         </a>
 
         <a href="#" class="box">
             <img src="image/cat-2.png" alt="" />
-            <h3>pizza</h3>
+            <h3>Italian food</h3>
         </a>
 
         <a href="#" class="box">
             <img src="image/cat-3.png" alt="" />
-            <h3>burger</h3>
+            <h3>Fast food</h3>
         </a>
 
         <a href="#" class="box">
             <img src="image/cat-4.png" alt="" />
-            <h3>chicken</h3>
+            <h3>Ayam goyeng</h3>
         </a>
 
         <a href="#" class="box">
             <img src="image/cat-5.png" alt="" />
-            <h3>dinner</h3>
+            <h3>Homemade food</h3>
         </a>
 
         <a href="#" class="box">
@@ -369,7 +367,7 @@ if(isset($_POST['simpanProfile'])){
 
         <div class="box-container">
             <?php 
-            $sql = "SELECT *FROM products";
+            $sql = "SELECT *FROM products WHERE id > 4";
 
             $result = mysqli_query($conn, $sql);
             if(mysqli_num_rows($result) > 0){
@@ -387,12 +385,13 @@ if(isset($_POST['simpanProfile'])){
 
     <section class="banner">
         <div class="row-banner">
-            <div class="content">
+            <form method="POST" class="content">
                 <span>double cheese</span>
                 <h3>burger</h3>
                 <p>with cococola and fries</p>
-                <a href="#" class="btn">order now</a>
-            </div>
+                <button href="#" name="addtocart" class="btn">order now</button>
+                <input type="hidden" name="product_id" value=4>
+        </form>
         </div>
 
         <div class="grid-banner">

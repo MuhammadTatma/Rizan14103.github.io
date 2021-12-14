@@ -78,6 +78,14 @@ CREATE TABLE IF NOT EXISTS `products`(
   `product_image` varchar(100)
 );
 
+-- insert special products
+INSERT INTO  `products` (id, product_name, product_price, product_image) VALUES 
+(1, 'spicy noodles', 45000, 'image/home-img-1.png' ),
+(2, 'fried chicken', 49500, 'image/home-img-2.png' ),
+(3, 'hot pizza', 47500, 'image/home-img-3.png' ),
+(4, 'burger, cola, and fries', 48500, 'image/cat-1.png' );
+
+
 -- insert data into products table
 INSERT INTO  `products` (product_name, product_price, product_image) VALUES
 ('produk 1',40000,'image/food-1.png'),

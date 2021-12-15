@@ -11,13 +11,11 @@ if (!isset($_SESSION['username'])) {
 if(isset($_POST['addtocart'])){
     $result = cekCart($conn, $_SESSION['userid'], $_POST['product_id']);
     // var_dump($result);
-    if($result->num_rows > 0){ //jika udah ada
-        echo "<script>alert('Product sudah ditambahkan di cart...!')</script>";
-        echo "<script>window.location = '#popular'</script>"; 
+    if($result->num_rows > 0){ //jika udah ada        
+        sweetAlert("WOWW !😁", "Produk sudah ada di cart!","info");
     }else{        
-        $result = addCart($conn, $_SESSION['userid'], $_POST['product_id']);
-        echo "<script>alert('Berhasil menambahkan...!')</script>";
-        echo "<script>window.location = '#popular'</script>"; 
+        $result = addCart($conn, $_SESSION['userid'], $_POST['product_id']);    
+        sweetAlert("Success", "produk berhasil ditambahkan", "success");
     }
 }
 
@@ -27,21 +25,25 @@ if(isset($_POST['remove'])){
     $effected = mysqli_affected_rows($conn);
     // var_dump($effected);
     if($effected >0 ){
-        echo "<script>alert('Product has been removed...!')</script>";
+        // echo "<script>alert('Product has been removed...!')</script>";        
+        sweetAlert("Yeay!","Berhasil menghapus!","success");
     }else{
-        echo "<script>alert('Something went kleru...!')</script>";
+        // echo "<script>alert('Something went kleru...!')</script>";        
+        sweetAlert("Error!","Ada yang salah !","error");
     }
 }
 
-if(isset($_POST['simpanProfile'])){
+if(isset($_POST['simpanProfile'])){    
     $result = updateProfile($conn, $_SESSION['userid'], $_POST['username'], $_POST['email'], $_POST['phone'],$_POST['kelamin'],$_POST['birthday']);
     $effected = mysqli_affected_rows($conn);
     // var_dump($_SESSION['userid']);
     // var_dump($_POST['kelamin']);
     if($effected >0 ){
-        echo "<script>alert('berhasil di simpan...!')</script>";
+        // echo "<script>alert('berhasil di simpan...!')</script>";        
+        sweetAlert("Success!","Berhasil di simpan!","success");
     }else{
-        echo "<script>alert('Something went kleru...!')</script>";
+        // echo "<script>alert('Something went kleru...!')</script>";       
+        sweetAlert("Error!","ada yang salah!","error");
     }
 }
 
@@ -754,6 +756,7 @@ if(isset($_POST['simpanProfile'])){
     <!-- custom js file link  -->
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <script src="js/script.js"></script>
+    <script src="js/sweetalert/sweetalert2.all.min.js"></script>
 </body>
 
 </html>

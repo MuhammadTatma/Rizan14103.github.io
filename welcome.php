@@ -12,7 +12,7 @@ if(isset($_POST['addtocart'])){
     $result = cekCart($conn, $_SESSION['userid'], $_POST['product_id']);
     // var_dump($result);
     if($result->num_rows > 0){ //jika udah ada        
-        sweetAlert("WOWW !😁", "Produk sudah ada di cart!","info");
+        sweetAlert("Woww !😁", "Produk sudah ada di cart!","info");
     }else{        
         $result = addCart($conn, $_SESSION['userid'], $_POST['product_id']);    
         sweetAlert("Success", "produk berhasil ditambahkan", "success");
@@ -179,7 +179,7 @@ if(isset($_POST['simpanProfile'])){
 
                     <div class="input-group">
                         <label class="input-label" for="email">Email</label>
-                        <input type="email" readonly name="email" id="email" placeholder="costumer's email" value=<?=  $email ?> required>
+                        <input type="email" class="form-control" readonly name="email" id="email" placeholder="costumer's email" value=<?=  $email ?> required>
                     </div>
 
                     <div class="input-group">
@@ -208,9 +208,7 @@ if(isset($_POST['simpanProfile'])){
                         <label class="input-label"></label>
                         <button type="submit" name="simpanProfile" class="btn">simpan</button>
                     </div>
-                </form>
-
-                <aside>
+                    <aside>
                     <div class="image-card">
                         <img src="image/image4.jpg" alt="Photo Profile" />
                         <input type="file" id="file" accept="image/*">
@@ -220,6 +218,9 @@ if(isset($_POST['simpanProfile'])){
                         <caption>Ukuran gambar: maks. 1 MB</caption>
                     </div>
                 </aside>
+                </form>
+
+                
             </main>
         </div>
     </section>

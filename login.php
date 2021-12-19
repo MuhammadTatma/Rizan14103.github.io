@@ -1,6 +1,7 @@
 <?php 
 
 include 'php/config.php';
+require("function.php");
 
 session_start();
 
@@ -21,11 +22,19 @@ if (isset($_POST['submit'])) {
 		$row = mysqli_fetch_assoc($result);
 		$_SESSION['username'] = $row['username'];
         $_SESSION['userid'] = $row['id'];
+        $_SESSION['role'] = $row['role'];
+        // var_dump($row['role']);
+        if($row['role'] == 1){ //cek apakah admin ato bukan
+            header("Location: admin/index.php");
+        }else{
+            header("Location: welcome.php");
+        }
 
-		header("Location: welcome.php");
+		
         
 	} else {
-		echo "<script>alert('Woops! Email or Password is Wrong.')</script>";
+		// echo "<script>alert('Woops! Email or Password is Wrong.')</script>";
+        sweetAlert("Error", "Woops! Email or Password is Wrong.", "error");
 	}
 }
 
@@ -70,6 +79,7 @@ if (isset($_POST['submit'])) {
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.min.js"></script>
     <script type="text/javascript"></script>
+    <script src="js/sweetalert/sweetalert2.all.min.js"></script>
 </body>
 
 </html>

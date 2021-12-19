@@ -103,7 +103,7 @@ function updateProfile($conn, $user_id, $username, $email, $hape, $kelamin, $bir
 
 function sweetAlert($title, $text, $type){
     $script = "
-         <script type=\"text/javascript\">
+         <script>
          setTimeout(function () { new swal(\"$title\",\"$text\",\"$type\");}, 1000);
          </script>
     ";

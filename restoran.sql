@@ -34,7 +34,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `password` varchar(255) NOT NULL,
   `no_telpon` varchar(16),
   `jenis_kelamin` varchar(16), 
-  `tanggal_lahir` date
+  `tanggal_lahir` date,
+  `role` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --

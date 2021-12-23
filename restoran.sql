@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS `cart` (
 CREATE TABLE IF NOT EXISTS 'costumer_order' (
   `order_id` INT(255) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
   `costumer_id` INT(255) NOT NULL,
-  `costumer_payment_method_id` INT(255) NOT NULL, 
+  `costumer_payment_method_id` INT(255), 
   `date_created` DATE NOT NULL, 
   `total_order_price` int(255) NOT NULL,
   `order_status` varchar(255)

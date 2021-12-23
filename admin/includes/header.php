@@ -41,7 +41,7 @@ if(!isset($_SESSION['userid'])){
                 <div class="sidebar-brand-icon rotate-n-15">
                     <!-- <i class="fas fa-laugh-wink"></i> -->
                 </div>
-                <div class="sidebar-brand-text mx-3">Binjai Admin <sup>2</sup></div>
+                <div class="sidebar-brand-text mx-3">Binjai Admin </div>
             </a>
 
             <!-- Divider -->
@@ -57,10 +57,10 @@ if(!isset($_SESSION['userid'])){
             <!-- Divider -->
             <hr class="sidebar-divider">
 
-            <!-- Heading -->
+            <!-- Heading
             <div class="sidebar-heading">
                 Interface
-            </div>
+            </div> -->
 
 
 
@@ -78,15 +78,34 @@ if(!isset($_SESSION['userid'])){
                         <a class="collapse-item" href="add-product.php">Add Products</a>                        
                     </div>
                 </div>
-            </li>            
+            </li>      
+            
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#order"
+                    aria-expanded="true" aria-controls="order">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>order</span>
+                </a>
+                <div id="order" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">order</h6>
+                        <a class="collapse-item" href="antrian.php">Total Orders</a>
+                        <a class="collapse-item" href="dimasak.php">On Proses</a>
+                        <a class="collapse-item" href="order.php">Order History</a>                        
+                    </div>
+                </div>
+            </li>    
             
             
-            <!-- Nav Item - Tables -->
+            
+            
+            <!-- Nav Item - Tables
             <li class="nav-item">
                 <a class="nav-link" href="tables.html">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Tables</span></a>
-            </li>
+            </li> -->
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
@@ -141,7 +160,7 @@ if(!isset($_SESSION['userid'])){
                                 <form class="form-inline mr-auto w-100 navbar-search">
                                     <div class="input-group">
                                         <input type="text" class="form-control bg-light border-0 small"
-                                            placeholder="Search for..." aria-label="Search"
+                                            placeholder="Search fosddsr..." aria-label="Search"
                                             aria-describedby="basic-addon2">
                                         <div class="input-group-append">
                                             <button class="btn btn-primary" type="button">
@@ -276,7 +295,7 @@ if(!isset($_SESSION['userid'])){
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Pak / Bu Admin</span>
                                 <img class="img-profile rounded-circle"
                                     src="img/undraw_profile.svg">
                             </a>

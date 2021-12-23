@@ -38,11 +38,14 @@ function food_keranjang($productname, $productprice, $productimage, $productid){
         <div class=\"content\">
             <h3>$productname</h3>
             <span> quantity : </span>
-            <input type=\"number\" name=\"\" value=\"1\" id=\"\" />
+            <input type=\"number\" name=\"quantity\" value=\"1\" id=\"quantity\" />
             <br/>
             <span> price : </span>
-            <span class=\"price\">$price</span>
+            <span class=\"price\" >$price</span>
+            <span style=\"visibility:hidden;\" id=\"satuan\">$productprice</span>
+            
         </div>
+        
     </form>
     ";
     echo $element;

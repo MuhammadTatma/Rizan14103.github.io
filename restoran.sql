@@ -34,7 +34,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `password` varchar(255) NOT NULL,
   `no_telpon` varchar(16),
   `jenis_kelamin` varchar(16), 
-  `tanggal_lahir` date
+  `tanggal_lahir` date,
+  `role` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -72,7 +73,7 @@ COMMIT;
 
 -- create products table
 CREATE TABLE IF NOT EXISTS `products`(
-  `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+  `id` INT(255) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
   `product_name` varchar(255) NOT NULL, 
   `product_price` FLOAT, 
   `product_image` varchar(100)
@@ -99,7 +100,25 @@ INSERT INTO  `products` (product_name, product_price, product_image) VALUES
 
 -- create cart table to store information user id and product id in cart
 CREATE TABLE IF NOT EXISTS `cart` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `user_id` INT(11) NOT NULL,
-  `product_id` INT(11) NOT NULL
+  `user_id` INT(255) NOT NULL,
+  `product_id` INT(255) NOT NULL
+);
+
+-- create table to store costumer order
+CREATE TABLE IF NOT EXISTS 'costumer_order' (
+  `order_id` INT(255) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+  `costumer_id` INT(255) NOT NULL,
+  `costumer_payment_method_id` INT(255) NOT NULL, 
+  `date_created` DATE NOT NULL, 
+  `total_order_price` int(255) NOT NULL,
+  `order_status` varchar(255)
+);
+
+CREATE TABLE IF NOT EXISTS `costumer_order_products`(
+  `id` INT(255) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+  `order_id` INT(255),
+  `product_id` INT(255), 
+  `quantity` INT (255),
+  `harga_satuan` INT (255),
+  `comment` VARCHAR(255) 
 );

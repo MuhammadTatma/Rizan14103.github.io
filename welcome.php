@@ -12,7 +12,7 @@ if(isset($_POST['addtocart'])){
     $result = cekCart($conn, $_SESSION['userid'], $_POST['product_id']);
     // var_dump($result);
     if($result->num_rows > 0){ //jika udah ada        
-        sweetAlert("WOWW !😁", "Produk sudah ada di cart!","info");
+        sweetAlert("Woww !😁", "Produk sudah ada di cart!","info");
     }else{        
         $result = addCart($conn, $_SESSION['userid'], $_POST['product_id']);    
         sweetAlert("Success", "produk berhasil ditambahkan", "success");
@@ -43,6 +43,14 @@ if(isset($_POST['simpanProfile'])){
         sweetAlert("Success!","Berhasil di simpan!","success");
     }else{
         // echo "<script>alert('Something went kleru...!')</script>";       
+        sweetAlert("Error!","ada yang salah!","error");
+    }
+}
+
+if(isset($_GET['checkout_success'])){
+    if($_GET['checkout_success']==true){
+        sweetAlert("Success!","Berhasil masuk antrian!","success");
+    }else{
         sweetAlert("Error!","ada yang salah!","error");
     }
 }
@@ -146,12 +154,19 @@ if(isset($_POST['simpanProfile'])){
                 <h3 class="subtotal">Delivery : <span> Rp.- </span></h3>
                 <h3 class="total">total : <?php 
                 $temp = rupiah($total);
-                echo "<span>$temp</span>";
+                echo "<span id=\"total\">$temp</span>";
                 ?></h3>
 
-                <a href="#" class="btn">proceed to checkout</a>
+                <a href="checkout.php" class="btn">proceed to checkout</a>
             </div>
         </div>
+        <script>
+            let total = document.getElementById('total');
+            let satuan = document.getElementById('satuan');
+            document.getElementById('quantity').addEventListener('change', function(){
+                console.log(<?php echo $total?> + parseInt(satuan.textContent));
+            });      
+        </script>
     </section>
 
     <!-- Profile -->
@@ -179,7 +194,7 @@ if(isset($_POST['simpanProfile'])){
 
                     <div class="input-group">
                         <label class="input-label" for="email">Email</label>
-                        <input type="email" readonly name="email" id="email" placeholder="costumer's email" value=<?=  $email ?> required>
+                        <input type="email" class="form-control" readonly name="email" id="email" placeholder="costumer's email" value=<?=  $email ?> required>
                     </div>
 
                     <div class="input-group">
@@ -208,8 +223,8 @@ if(isset($_POST['simpanProfile'])){
                         <label class="input-label"></label>
                         <button type="submit" name="simpanProfile" class="btn">simpan</button>
                     </div>
+                    
                 </form>
-
                 <aside>
                     <div class="image-card">
                         <img src="image/image4.jpg" alt="Photo Profile" />
@@ -220,6 +235,7 @@ if(isset($_POST['simpanProfile'])){
                         <caption>Ukuran gambar: maks. 1 MB</caption>
                     </div>
                 </aside>
+                
             </main>
         </div>
     </section>

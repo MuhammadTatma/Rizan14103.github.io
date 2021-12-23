@@ -1,6 +1,7 @@
 <?php 
 
 include 'php/config.php';
+require("function.php");
 
 error_reporting(0);
 
@@ -21,26 +22,40 @@ if (isset($_POST['submit'])) {
 		$sql = "SELECT * FROM users WHERE email='$email'";
 		$result = mysqli_query($conn, $sql);
 		if (!$result->num_rows > 0) {
-			$sql = "INSERT INTO users (username, email, no_telpon, password)
-					VALUES ('$name', '$email', '$no_telpon', '$password')";
+			$sql = "INSERT INTO users (username, email, no_telpon, password, role)
+					VALUES ('$name', '$email', '$no_telpon', '$password', 0)";
 			$result = mysqli_query($conn, $sql);
 			if ($result) {
-				echo "<script>alert('Wow! User Registration Completed.')</script>";
-				$username = "";
-				$email = "";
-				$_POST['password'] = "";
-				$_POST['cpassword'] = "";
-                header("Location: welcome.php");
+				// echo "<script>alert('Wow! User Registration Completed.')</script>";                				
+                unset($_POST['username']);
+                unset($_POST['email']);
+                unset($_POST['noHp']);
+                unset($_POST['password']);
+                unset($_POST['cpassword']);
+                echo "<script>
+                    setTimeout(function () { new swal({
+                        title: \"Success\",
+                        text: \"berhasil terdaftar\",
+                        type: \"success\"                           
+                    }).then((result)=>{
+                        if (result.isConfirmed){
+                            window.location = \"login.php\";
+                        }
+                    });}, 1000);
+                </script>";
 			} else {
-				echo "<script>alert('Woops! Something Wrong Went.')</script>";
+				// echo "<script>alert('Woops! Something Wrong Went.')</script>";
+                sweetAlert("Error", "Woops! Something Wrong Went.", "error");                
 			}
 		} else {
-			echo "<script>alert('Woops! Email Already Exists.')</script>";
+			// echo "<script>alert('Woops! Email Already Exists.')</script>";
+            sweetAlert("Error", "Woops! Email Already Exists", "error");
 		}
 		
 	} else {
-        var_dump("sddd");
-		echo "<script>alert('Password Not Matched.')</script>";
+        // var_dump("sddd");
+		// echo "<script>alert('Password Not Matched.')</script>";
+        sweetAlert("Error", "Password tidak sesuai", "error");
 	}
 }
 
@@ -82,11 +97,12 @@ if (isset($_POST['submit'])) {
                     value="<?php echo $_POST['cpassword']; ?>" required>
             </div>
             <div class="input-group">
-                <button name="submit" type="submit" class="btn"><a href="welcome.php">Register</a></button>
+                <button name="submit" type="submit" class="btn">Register</button>
             </div>
             <p class="login-register-text">Have an account? <a href="login.php">Login Here</a>.</p>
         </form>
     </div>
+    <script src="js/sweetalert/sweetalert2.all.min.js"></script>
 </body>
 
 </html>

@@ -59,10 +59,11 @@ error_reporting(0);
                     </li>
                 </ul>
             </div>
-            <button class="cta cta1"><a href="login.php">Log In</a></button>
-            <button class="cta cta2">
-                <a href="register.php">Sign Up</a>
-            </button>
+            <div>
+                <button style="margin-right:1rem;" class="cta cta1"><a href="login.php">Log In</a></button>
+                <button class="cta cta2"><a href="register.php">Sign Up</a></button>
+            </div>
+            
         </nav>
     </header>
 

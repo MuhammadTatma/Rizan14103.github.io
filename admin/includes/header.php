@@ -132,7 +132,7 @@ if(!isset($_SESSION['userid'])){
                     </button>
 
                     <!-- Topbar Search -->
-                    <form
+                    <!-- <form
                         class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
                             <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
@@ -143,7 +143,7 @@ if(!isset($_SESSION['userid'])){
                                 </button>
                             </div>
                         </div>
-                    </form>
+                    </form> -->                    
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -302,7 +302,7 @@ if(!isset($_SESSION['userid'])){
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#">
+                                <!-- <a class="dropdown-item" href="#">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Profile
                                 </a>
@@ -314,7 +314,7 @@ if(!isset($_SESSION['userid'])){
                                     <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Activity Log
                                 </a>
-                                <div class="dropdown-divider"></div>
+                                <div class="dropdown-divider"></div> -->
                                 <a class="dropdown-item" href=".././logout.php" >
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout

@@ -32,17 +32,24 @@ function food_popular($productname, $productprice, $productimage, $product_id){
 function food_keranjang($productname, $productprice, $productimage, $productid){
     $price = rupiah($productprice);
     $element = "
-    <form action=\"welcome.php?id=$productid\" method=\"post\" class=\"box\">
+    <form action=\"costcart.php?id=$productid\" method=\"post\" class=\"box\">
         <button type=\"submit\" name=\"remove\" class=\"fas fa-times\"></button> 
         <img src=\"$productimage\" alt=\"iki gambar\" />
         <div class=\"content\">
-            <h3>$productname</h3>
-            <span> quantity : </span>
-            <input type=\"number\" name=\"quantity\" value=\"1\" id=\"quantity\" />
+            <h3>$productname</h3>            
+            <div class=\"bungkus\">                    
+                <span> quantity :  </span>                
+                <i class=\"kurang fas fa-minus-square fa-2x\"></i>
+                <input type=\"text\" name=\"qty\" value=\"1\" id=\"1\" disabled/>
+                <i class=\"tambah fas fa-plus-square fa-2x\"></i>
+                <input type=\"hidden\" id=\"satuan\" value=\"$productprice\"/>
+                <input type=\"hidden\" id=\"idproduknya\" value=\"$productid\"/>
+            </div>
+
             <br/>
             <span> price : </span>
             <span class=\"price\" >$price</span>
-            <span style=\"visibility:hidden;\" id=\"satuan\">$productprice</span>
+            
             
         </div>
         

@@ -66,8 +66,7 @@
     <!-- script coba coba -->
     <script src="js/demo/dataHandler.js"></script>
 
-    <!-- Page level custom scripts -->
-    <script src="js/demo/chart-area-demo.js"></script>
+    <!-- Page level custom scripts -->    
     <script src="js/demo/chart-pie-demo.js"></script>
 
     <!-- sweetAlert -->    

@@ -42,16 +42,19 @@
                 SUM(CASE WHEN order_status = \"ongoing\" THEN 1 ELSE 0 END) AS \"ongoing\"
          FROM `costumer_order` WHERE date_created = '$date' ";
     $result = mysqli_query($conn,$sql);
-
+    
     if($result){
         $row = mysqli_fetch_assoc($result);
         $sum = $row['sum'];
         $waiting = $row['waiting'];
         $finished = $row['finished'];
         $ongoing = $row['ongoing'];
-        if($sum==null){
-            $sum = 0;
-        }
+        if($sum==null){$sum = 0;}
+        if($waiting==null){$waiting = 0;}
+        if($finished==null){$finished = 0;}
+        if($ongoing==null){$ongoing = 0;}
+        
+        
         echo "
                 <script>                                            
                     var todaySumEarning = $sum;  

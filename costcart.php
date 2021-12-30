@@ -107,6 +107,7 @@ $arrayku = array();
                         setTimeout(function () { new swal("Berhasil","Pesanan Berhasil Masuk Antrian","success");}, 1000);
                         $(".box-container").html('<h3 style=\"text-align:center;\">Cart is Empty</h3>');
                         $(".total").html('Rp. 0,00');
+                        $("#cart-count").html('0');
                     }else{
                         setTimeout(function () { new swal("Error","Ada yang salah","error");}, 1000);
                     }

@@ -39,9 +39,9 @@ function food_keranjang($productname, $productprice, $productimage, $productid){
             <h3>$productname</h3>            
             <div class=\"bungkus\">                    
                 <span> quantity :  </span>                
-                <i class=\"kurang fas fa-minus-square fa-2x\"></i>
+                <i class=\"kurang fas fa-minus-square fa-2x\" style=\" cursor: pointer;\"></i>
                 <input type=\"text\" name=\"qty\" value=\"1\" id=\"1\" disabled/>
-                <i class=\"tambah fas fa-plus-square fa-2x\"></i>
+                <i class=\"tambah fas fa-plus-square fa-2x\" style=\" cursor: pointer;\"></i>
                 <input type=\"hidden\" id=\"satuan\" value=\"$productprice\"/>
                 <input type=\"hidden\" id=\"idproduknya\" value=\"$productid\"/>
             </div>

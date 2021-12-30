@@ -1,6 +1,70 @@
 
 <?php include "includes/header.php" ?>
 
+<script>
+    var tempArray= [];
+</script>
+<?php 
+    $sql = "SELECT 
+            SUM(total_order_price) AS total,
+            MONTH(date_created) AS bulan,
+            YEAR(date_created) AS tahun
+        FROM `costumer_order`     
+        WHERE order_status = 'finished' 
+        GROUP BY YEAR(date_created),MONTH(date_created);";
+    $result = mysqli_query($conn,$sql);
+    if($result){
+        while($row = mysqli_fetch_assoc($result)){
+            $total = $row['total'];
+            $bulan = $row['bulan'];
+            $tahun = $row['tahun'];
+            echo "
+                <script>                                            
+                    tempArray.push({
+                        \"jumlah\": $total,
+                        \"bulan\": $bulan,   
+                        \"tahun\": $tahun   
+
+                    });                                                                      
+                </script>
+            ";                                                         
+        }
+    }else{
+        var_dump(mysqli_error($conn));
+    }
+
+
+    $date = date("Y-m-d");
+    $sql = "SELECT 
+                SUM(CASE WHEN order_status = \"finished\" THEN total_order_price ELSE 0 END) AS \"sum\",
+                SUM(CASE WHEN order_status = \"Waiting\" THEN 1 ELSE 0 END) AS \"waiting\" ,
+                SUM(CASE WHEN order_status = \"finished\" THEN 1 ELSE 0 END) AS \"finished\",
+                SUM(CASE WHEN order_status = \"ongoing\" THEN 1 ELSE 0 END) AS \"ongoing\"
+         FROM `costumer_order` WHERE date_created = '$date' ";
+    $result = mysqli_query($conn,$sql);
+
+    if($result){
+        $row = mysqli_fetch_assoc($result);
+        $sum = $row['sum'];
+        $waiting = $row['waiting'];
+        $finished = $row['finished'];
+        $ongoing = $row['ongoing'];
+        if($sum==null){
+            $sum = 0;
+        }
+        echo "
+                <script>                                            
+                    var todaySumEarning = $sum;  
+                    var todayWaitingOrder = $waiting;
+                    var todayFinishedOrder = $finished;
+                    var todayOngoingOrder =  $ongoing;                                                              
+                </script>
+            ";          
+    }else{
+        var_dump(mysqli_error($conn));
+    }
+?>  
+
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
@@ -22,7 +86,7 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                 Earnings (Daily)</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">Rp.40.000,-</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="earning-daily">Rp.40.000,-</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -40,7 +104,7 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                 Earnings (Monthly)</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">Rp.215.000,-</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="earning-monthly">Rp.215.000,-</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -60,7 +124,7 @@
                             </div>
                             <div class="row no-gutters align-items-center">
                                 <div class="col-auto">
-                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50</div>
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800" id="total-order">50</div>
                                 </div>
                                 <!-- <div class="col">
                                     <div class="progress progress-sm mr-2">
@@ -87,7 +151,7 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                 On Proses</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="on-proses">18</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-comments fa-2x text-gray-300"></i>
@@ -109,20 +173,24 @@
                 <div
                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
-                    <div class="dropdown no-arrow">
-                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                            aria-labelledby="dropdownMenuLink">
-                            <div class="dropdown-header">Dropdown Header:</div>
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Something else here</a>
+                    <div class="d-flex flex-row align-items-center">
+                        <input type="text" style="width:4rem;" class="form-control" name="datepicker" id="datepicker" />
+                        <div class="dropdown no-arrow">
+                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                aria-labelledby="dropdownMenuLink">
+                                <div class="dropdown-header">Dropdown Header:</div>
+                                <a class="dropdown-item" href="#">Action</a>
+                                <a class="dropdown-item" href="#">Another action</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Something else here</a>
+                            </div>
                         </div>
                     </div>
+                    
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">

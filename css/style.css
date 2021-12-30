@@ -255,7 +255,7 @@ section {
 }
 
 .shopping-cart-container {
-  position: fixed;
+  /* position: fixed; */
   top: 8.5rem;
   left: 0;
   right: 0;
@@ -263,15 +263,13 @@ section {
   height: calc(100vh - 8.5rem);
   background: #fff;
   overflow-y: scroll;
-  padding-bottom: 8rem;
-  display: none;
-}
-
-.shopping-cart-container.active {
+  padding-bottom: 8rem;  
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
+
+
 
 .shopping-cart-container::-webkit-scrollbar {
   width: 1rem;
@@ -326,6 +324,11 @@ section {
   position: relative;
 }
 
+.shopping-cart-container .products-container .box-container table {
+  justify-content: center;
+  text-align: center;
+}
+
 .shopping-cart-container .products-container .box-container .box .fa-times {
   position: absolute;
   top: 0.7rem;
@@ -342,6 +345,42 @@ section {
   .fa-times:hover {
   color: #4481eb;
 }
+
+.shopping-cart-container .products-container .box-container .box .content .bungkus {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.shopping-cart-container .products-container .box-container .box .content .bungkus input {
+  width: 5rem;
+  height: fit-content;
+  border-radius: 0.5rem;
+  text-align: center;
+  padding: 0 1.5rem 0 1.5rem;
+  border: 1px solid #c6c6c6;
+  margin: 0 5px 0 5px;
+}
+
+.shopping-cart-container .products-container .box-container .box .content .bungkus span {
+  margin-right: 3px;
+}
+.shopping-cart-container .products-container .box-container .box .content .bungkus .fas {
+  color: grey;
+}
+
+/* .shopping-cart-container .products-container .box-container .box .content .bungkus .button {
+  width: 2rem;
+  height: fit-content;
+  border-radius: 0.5rem;
+  text-align: center;
+  padding: 0 .5rem 0 .5rem;
+  background-color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+  border: 1px solid #c6c6c6;
+  
+} */
 
 .shopping-cart-container .products-container .box-container .box img {
   height: 8rem;
@@ -405,7 +444,7 @@ section {
 }
 
 .profile-cart-container {
-  position: fixed;
+  /* position: fixed; */
   top: 8.5rem;
   left: 0;
   right: 0;
@@ -414,12 +453,10 @@ section {
   background: #fff;
   overflow-y: scroll;
   padding-bottom: 8rem;
-  display: none;  
+  display: block;  
 }
 
-.profile-cart-container.active {
-  display: block;
-}
+
 
 .profile-cart-container::-webkit-scrollbar {
   width: 1rem;

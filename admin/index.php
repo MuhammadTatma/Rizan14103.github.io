@@ -67,7 +67,7 @@
         var_dump(mysqli_error($conn));
     }
 
-    //top product and less deireable
+    //top product and less desirable
     $bulan = date("n");
     $year = date("Y");
     $sql = "SELECT 
@@ -136,8 +136,38 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+        <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#exampleModalCenter"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</button>
+
+        <!-- Modal -->
+        <div class="modal fade " id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered " role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Generate Report</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                    <form action="generatePDF.php" method="GET" target="_blank" id="myform">
+                        <div class="modal-body d-flex justify-content-center flex-column">
+                            <div class="form-group">
+                                <label for="monthpicker">Select month</label>
+                                <input type="text" class="form-control w-25 text-center" name="monthpicker" id="monthpicker" aria-describedby="monthpicker"/>
+                            </div>                            
+                                
+                            <div class="form-group">
+                                <label for="insight">Insight for the period:</label>
+                                <textarea class="form-control" name="insight" form="myform" rows="5" id="insight"></textarea>
+                            </div> 
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" >Generate</button>
+                        </div>
+                    </form>      
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Content Row -->
@@ -190,14 +220,7 @@
                             <div class="row no-gutters align-items-center">
                                 <div class="col-auto">
                                     <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800" id="total-order">0</div>
-                                </div>
-                                <!-- <div class="col">
-                                    <div class="progress progress-sm mr-2">
-                                        <div class="progress-bar bg-info" role="progressbar"
-                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                                            aria-valuemax="100"></div>
-                                    </div>
-                                </div> -->
+                                </div>                                
                             </div>
                         </div>
                         <div class="col-auto">

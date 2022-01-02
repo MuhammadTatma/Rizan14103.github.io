@@ -159,7 +159,7 @@ const earningGroupedByYear = groupBy(tempArray, 'tahun');
 console.log(earningGroupedByYear)
 
 // const test sebagai data yang dipake di cart earning overview chart-area-demo.js
-var test = getEarningData(earningGroupedByYear,'2021');
+var test = getEarningData(earningGroupedByYear,currentYear);
 console.log(test);
 
 //gambar cart nya
@@ -186,6 +186,27 @@ dp.on('change', function () {
     var canvas = document.getElementById("myAreaChart");
     drawBarChart(canvas,test);
  });
+
+var mymp = $("#monthpicker");
+var mp = mymp.datepicker({
+    format: "mm yyyy",
+    viewMode: "months", 
+    minViewMode: "months",
+    autoclose:true, 
+});
+
+mymp.attr("value",currentMonth + " " +currentYear);
+
+// mp.on('change', function () {        
+//     var selected = $(this).val();
+//     test = getEarningData(earningGroupedByYear,selected);
+//     console.log(test);
+//     var coba = document.getElementById("myAreaChart");
+//     coba.remove();
+//     $(".chart-area").append('<canvas id="myAreaChart"><canvas>')
+//     var canvas = document.getElementById("myAreaChart");
+//     drawBarChart(canvas,test);
+//  });
 
 
 

@@ -42,16 +42,19 @@
                 SUM(CASE WHEN order_status = \"ongoing\" THEN 1 ELSE 0 END) AS \"ongoing\"
          FROM `costumer_order` WHERE date_created = '$date' ";
     $result = mysqli_query($conn,$sql);
-
+    
     if($result){
         $row = mysqli_fetch_assoc($result);
         $sum = $row['sum'];
         $waiting = $row['waiting'];
         $finished = $row['finished'];
         $ongoing = $row['ongoing'];
-        if($sum==null){
-            $sum = 0;
-        }
+        if($sum==null){$sum = 0;}
+        if($waiting==null){$waiting = 0;}
+        if($finished==null){$finished = 0;}
+        if($ongoing==null){$ongoing = 0;}
+        
+        
         echo "
                 <script>                                            
                     var todaySumEarning = $sum;  
@@ -63,6 +66,68 @@
     }else{
         var_dump(mysqli_error($conn));
     }
+
+    //top product and less desirable
+    $bulan = date("n");
+    $year = date("Y");
+    $sql = "SELECT 
+                a.product_name, 
+                b.total 
+            FROM products  a LEFT JOIN 
+                (
+                        SELECT 
+                            costumer_order.date_created AS date, 
+                            costumer_order_products.product_id AS prodID,
+                            SUM(costumer_order_products.quantity) AS total            
+                        FROM `costumer_order_products` RIGHT JOIN costumer_order ON costumer_order_products.order_id = costumer_order.order_id  
+                        GROUP BY YEAR(costumer_order.date_created),MONTH(costumer_order.date_created), prodID 
+                        HAVING YEAR(costumer_order.date_created) = $year AND MONTH(costumer_order.date_created) = $bulan
+                        ORDER BY `costumer_order`.`date_created` DESC
+                ) b ON a.id = b.prodID  
+            ORDER BY `b`.`total`  DESC";
+    $result = mysqli_query($conn,$sql);
+    
+    if($result){
+        $myArray = array();
+        while($row = mysqli_fetch_assoc($result)){
+            array_push($myArray,$row);
+        }        
+    }else{
+        var_dump(mysqli_error($conn));
+    }
+
+    if($bulan == 1){
+        $prevMonth = 12;
+        $prevYear = $year-1;        
+    }else{
+        $prevMonth = $bulan - 1;
+        $prevYear = $year;
+    }
+    $sql = "SELECT 
+                a.product_name, 
+                b.total 
+            FROM products  a LEFT JOIN 
+                (
+                        SELECT 
+                            costumer_order.date_created AS date, 
+                            costumer_order_products.product_id AS prodID,
+                            SUM(costumer_order_products.quantity) AS total            
+                        FROM `costumer_order_products` RIGHT JOIN costumer_order ON costumer_order_products.order_id = costumer_order.order_id  
+                        GROUP BY YEAR(costumer_order.date_created),MONTH(costumer_order.date_created), prodID 
+                        HAVING YEAR(costumer_order.date_created) = $prevYear AND MONTH(costumer_order.date_created) = $prevMonth
+                        ORDER BY `costumer_order`.`date_created` DESC
+                ) b ON a.id = b.prodID  
+            ORDER BY `b`.`total`  DESC";
+    $result = mysqli_query($conn,$sql);
+    
+    if($result){
+        $arrPrev = array();
+        while($row = mysqli_fetch_assoc($result)){
+            array_push($arrPrev,$row);
+        }        
+    }else{
+        var_dump(mysqli_error($conn));
+    }
 ?>  
 
 <!-- Begin Page Content -->
@@ -71,8 +136,38 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+        <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#exampleModalCenter"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</button>
+
+        <!-- Modal -->
+        <div class="modal fade " id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered " role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Generate Report</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                    <form action="generatePDF.php" method="GET" target="_blank" id="myform">
+                        <div class="modal-body d-flex justify-content-center flex-column">
+                            <div class="form-group">
+                                <label for="monthpicker">Select month</label>
+                                <input type="text" class="form-control w-25 text-center" name="monthpicker" id="monthpicker" aria-describedby="monthpicker"/>
+                            </div>                            
+                                
+                            <div class="form-group">
+                                <label for="insight">Insight for the period:</label>
+                                <textarea class="form-control" name="insight" form="myform" rows="5" id="insight"></textarea>
+                            </div> 
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" >Generate</button>
+                        </div>
+                    </form>      
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Content Row -->
@@ -86,7 +181,7 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                 Earnings (Daily)</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="earning-daily">Rp.40.000,-</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="earning-daily">Rp 0,00</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -104,7 +199,7 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                 Earnings (Monthly)</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="earning-monthly">Rp.215.000,-</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="earning-monthly">Rp 0,00</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -124,15 +219,8 @@
                             </div>
                             <div class="row no-gutters align-items-center">
                                 <div class="col-auto">
-                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800" id="total-order">50</div>
-                                </div>
-                                <!-- <div class="col">
-                                    <div class="progress progress-sm mr-2">
-                                        <div class="progress-bar bg-info" role="progressbar"
-                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                                            aria-valuemax="100"></div>
-                                    </div>
-                                </div> -->
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800" id="total-order">0</div>
+                                </div>                                
                             </div>
                         </div>
                         <div class="col-auto">
@@ -151,7 +239,7 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                 On Proses</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="on-proses">18</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="on-proses">0</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-comments fa-2x text-gray-300"></i>
@@ -230,14 +318,11 @@
                     </div>
                     <div class="mt-4 text-center small">
                         <span class="mr-2">
-                            <i class="fas fa-circle text-primary"></i> Direct
+                            <i class="fas fa-circle text-primary"></i> Cash On Demand
                         </span>
                         <span class="mr-2">
-                            <i class="fas fa-circle text-success"></i> Social
-                        </span>
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-info"></i> Referral
-                        </span>
+                            <i class="fas fa-circle text-success"></i> In Restaurant
+                        </span>                        
                     </div>
                 </div>
             </div>
@@ -251,154 +336,128 @@
         <div class="col-lg-6 mb-4">
 
             <!-- Project Card Example -->
-            <div class="card shadow mb-4">
+            <div class="card shadow mb-4 ">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Projects</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Top Products</h6>
                 </div>
-                <div class="card-body">
-                    <h4 class="small font-weight-bold">Server Migration <span
-                            class="float-right">20%</span></h4>
-                    <div class="progress mb-4">
-                        <div class="progress-bar bg-danger" role="progressbar" style="width: 20%"
-                            aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <h4 class="small font-weight-bold">Sales Tracking <span
-                            class="float-right">40%</span></h4>
-                    <div class="progress mb-4">
-                        <div class="progress-bar bg-warning" role="progressbar" style="width: 40%"
-                            aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <h4 class="small font-weight-bold">Customer Database <span
-                            class="float-right">60%</span></h4>
-                    <div class="progress mb-4">
-                        <div class="progress-bar" role="progressbar" style="width: 60%"
-                            aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <h4 class="small font-weight-bold">Payout Details <span
-                            class="float-right">80%</span></h4>
-                    <div class="progress mb-4">
-                        <div class="progress-bar bg-info" role="progressbar" style="width: 80%"
-                            aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <h4 class="small font-weight-bold">Account Setup <span
-                            class="float-right">Complete!</span></h4>
-                    <div class="progress">
-                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%"
-                            aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                </div>
-            </div>
+                <div class="table-responsive px-2">
+                    <table class="table table-hover " >
+                        <thead>
+                            <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">number of sell<th>                                                      
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php 
+                            
+                            $num = count($myArray);
+                            // var_dump($num);
+                            for ($i=0; $i < 5; $i++) { 
+                                $temp = $myArray[$i];
+                                $tempPrev = $arrPrev[$i];
+                            ?>
+                                <tr>
+                                    <td><?php echo $i+1 ?></td>
+                                    <td><?php echo $temp['product_name'] ?></td>
+                                    <td class="d-flex justify-content-between"><?php 
+                                    if($temp['total'] == null){
+                                        $temp['total']=0; 
+                                        echo 0;
+                                    }else{
+                                        echo $temp['total'];
+                                    }  
 
-            <!-- Color System -->
-            <div class="row">
-                <div class="col-lg-6 mb-4">
-                    <div class="card bg-primary text-white shadow">
-                        <div class="card-body">
-                            Primary
-                            <div class="text-white-50 small">#4e73df</div>
-                        </div>
-                    </div>
+                                    $selisih = $temp['total']-$tempPrev['total'];
+                                    if($selisih < 0){
+                                        $val = abs($selisih);
+                                        echo "<small class=\"text-danger font-weight-bold\">-$val</small>";
+                                    }else{
+                                        echo "<small class=\"text-success font-weight-bold\">+$selisih</small>";
+                                    }
+                                    ?>                                    
+                                </tr>
+
+                            <?php     
+                            }
+                            ?>
+                            
+                                                        
+                        </tbody>
+                    </table>
                 </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card bg-success text-white shadow">
-                        <div class="card-body">
-                            Success
-                            <div class="text-white-50 small">#1cc88a</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card bg-info text-white shadow">
-                        <div class="card-body">
-                            Info
-                            <div class="text-white-50 small">#36b9cc</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card bg-warning text-white shadow">
-                        <div class="card-body">
-                            Warning
-                            <div class="text-white-50 small">#f6c23e</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card bg-danger text-white shadow">
-                        <div class="card-body">
-                            Danger
-                            <div class="text-white-50 small">#e74a3b</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card bg-secondary text-white shadow">
-                        <div class="card-body">
-                            Secondary
-                            <div class="text-white-50 small">#858796</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card bg-light text-black shadow">
-                        <div class="card-body">
-                            Light
-                            <div class="text-black-50 small">#f8f9fc</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card bg-dark text-white shadow">
-                        <div class="card-body">
-                            Dark
-                            <div class="text-white-50 small">#5a5c69</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                
+            </div>    
+            
+              
+            
 
         </div>
 
         <div class="col-lg-6 mb-4">
 
-            <!-- Illustrations -->
-            <div class="card shadow mb-4">
+            <!-- Less Desirable -->
+            <div class="card shadow mb-4 ">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Illustrations</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Less Desirable Products</h6>
                 </div>
-                <div class="card-body">
-                    <div class="text-center">
-                        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
-                            src="img/undraw_posting_photo.svg" alt="...">
-                    </div>
-                    <p>Add some quality, svg illustrations to your project courtesy of <a
-                            target="_blank" rel="nofollow" href="https://undraw.co/">unDraw</a>, a
-                        constantly updated collection of beautiful svg images that you can use
-                        completely free and without attribution!</p>
-                    <a target="_blank" rel="nofollow" href="https://undraw.co/">Browse Illustrations on
-                        unDraw &rarr;</a>
-                </div>
-            </div>
+                <div class="table-responsive px-2">
+                    <table class="table table-hover " >
+                        <thead>
+                            <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">number of sell</th>                            
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php 
+                            $num = count($myArray);
+                            // var_dump($num);
+                            $count = 1;
+                            for ($i=$num-1 ; $i >= $num - 5; $i--) { 
+                                $temp = $myArray[$i];
+                                $tempPrev = $arrPrev[$i];
 
-            <!-- Approach -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Development Approach</h6>
+                            ?>
+                                <tr>
+                                    <td><?php echo $count ?></td>
+                                    <td><?php echo $temp['product_name'] ?></td>
+                                    <td class="d-flex justify-content-between"><?php 
+                                    if($temp['total'] == null){
+                                        $temp['total']=0; 
+                                        echo 0;
+                                    }else{
+                                        echo $temp['total'];
+                                    }  
+
+                                    $selisih = $temp['total']-$tempPrev['total'];
+                                    if($selisih < 0){
+                                        $val = abs($selisih);
+                                        echo "<small class=\"text-danger font-weight-bold\">-$val</small>";
+                                    }else{
+                                        echo "<small class=\"text-success font-weight-bold\">+$selisih</small>";
+                                    }
+                                    ?> </tr>
+
+                            <?php   
+                            $count++;  
+                            }
+                            ?>
+                            
+                                                        
+                        </tbody>
+                    </table>
                 </div>
-                <div class="card-body">
-                    <p>SB Admin 2 makes extensive use of Bootstrap 4 utility classes in order to reduce
-                        CSS bloat and poor page performance. Custom CSS classes are used to create
-                        custom components and custom utility classes.</p>
-                    <p class="mb-0">Before working with this theme, you should become familiar with the
-                        Bootstrap framework, especially the utility classes.</p>
-                </div>
-            </div>
+                
+            </div>              
 
         </div>
     </div>
 
 </div>
-<!-- /.container-fluid -->
+
 
 </div>
 <!-- End of Main Content -->
